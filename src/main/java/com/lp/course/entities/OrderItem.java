@@ -3,6 +3,7 @@ package com.lp.course.entities;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lp.course.entities.pk.OrderItemPK;
 
 import jakarta.persistence.EmbeddedId;
@@ -10,13 +11,16 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "table_order_item")
+@Table(name = "tb_order_item")
 public class OrderItem implements Serializable {
-
 	private static final long serialVersionUID = 1L;
-	@EmbeddedId
-	private OrderItemPK id;
 
+	@EmbeddedId
+	private OrderItemPK id = new OrderItemPK();
+	/*
+	 * SEMPRE AO CRIAR UMA CLASSE AUXILIAR QUE É O ID COMPOSTO, INSTANCIAR A CLASSE,
+	 * PARA QUE ELA NÃO ENTRE VALENDO NULO
+	 */
 	private Integer quantity;
 	private Double price;
 
@@ -31,22 +35,23 @@ public class OrderItem implements Serializable {
 		this.quantity = quantity;
 		this.price = price;
 	}
-
+	@JsonIgnore
 	public Order getOrder() {
 		return id.getOrder();
 	}
-	
+
 	public void setOrder(Order order) {
 		id.setOrder(order);
 	}
-	
+
 	public Product getProduct() {
 		return id.getProduct();
 	}
-	
+
 	public void setOrder(Product product) {
 		id.setProduct(product);
 	}
+
 	public Integer getQuantity() {
 		return quantity;
 	}
