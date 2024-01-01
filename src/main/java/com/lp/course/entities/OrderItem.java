@@ -61,6 +61,12 @@ public class OrderItem implements Serializable {
 		this.quantity = quantity;
 	}
 
+	public Double getSubTotal() {
+		
+		/* Na plataforma Java Enterprise, o que vale na busca, é a palavra get, portanto, o sufixo não deve ser esquecido*/
+		return price * quantity;
+	}
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
