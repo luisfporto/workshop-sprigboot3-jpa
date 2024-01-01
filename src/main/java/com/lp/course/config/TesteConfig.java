@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Profile;
 import com.lp.course.entities.Category;
 import com.lp.course.entities.Order;
 import com.lp.course.entities.OrderItem;
+import com.lp.course.entities.Payment;
 import com.lp.course.entities.Product;
 import com.lp.course.entities.User;
 import com.lp.course.entities.enums.OrderStatus;
@@ -39,7 +40,7 @@ public class TesteConfig implements CommandLineRunner {
 	private ProductRepository productRepository;
 	@Autowired
 	private OrderItemRepository orderItemRepository;
-	
+
 	@Override
 	public void run(String... args) throws Exception {
 		Category cat1 = new Category(null, "Electronics");
@@ -58,9 +59,9 @@ public class TesteConfig implements CommandLineRunner {
 		p3.getCategories().add(cat3);
 		p4.getCategories().add(cat3);
 		p5.getCategories().add(cat2);
-		
+
 		productRepository.saveAll(Arrays.asList(p1, p2, p3, p4, p5));
-		
+
 		User u1 = new User(null, "Maria Brown", "maria@gmail.com", "988888888", "123456");
 		User u2 = new User(null, "Alex Green", "alex@gmail.com", "977777777", "123456");
 		Order o1 = new Order(null, Instant.parse("2019-06-20T19:53:07Z"), OrderStatus.PAID, u1);
@@ -68,14 +69,22 @@ public class TesteConfig implements CommandLineRunner {
 		Order o3 = new Order(null, Instant.parse("2019-07-22T15:21:22Z"), OrderStatus.WAITING_PAYMENT, u1);
 		userRepository.saveAll(Arrays.asList(u1, u2));
 		orderRepository.saveAll(Arrays.asList(o1, o2, o3));
-		
+
 		OrderItem oi1 = new OrderItem(o1, p1, 2, p1.getPrice());
 		OrderItem oi2 = new OrderItem(o1, p3, 1, p3.getPrice());
 		OrderItem oi3 = new OrderItem(o2, p3, 2, p3.getPrice());
 		OrderItem oi4 = new OrderItem(o3, p5, 2, p5.getPrice());
-		
+
 		orderItemRepository.saveAll(Arrays.asList(oi1, oi2, oi3, oi4));
 
+		Payment pay1 = new Payment(null, Instant.parse("2019-06-20T21:53:07Z"), o1);
+		o1.setPayment(pay1);
+		/*
+		 * PARA SALVAR UM OBJETO DEPENDENTE NUMA RELAÇÃO UM PARA UM, NÃO SE CHAMA O
+		 * REPOSITORY, MAS SIM O PRÓPRIO OBJETO, COM PARAMETRO, O JPA SE ENCARREGA DE FAZER O SALVAMENTO
+		 * OBSERVE QUE NÃO HÁ REPOSITORY ESPECÍFICO PARA O PAYMENT
+		 */
+		orderRepository.save(o1);
 	}
 
 }
